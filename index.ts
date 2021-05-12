@@ -22,21 +22,24 @@ const DuplicateDecisions = [
 ];
 
 const distinctDecisions = {};
+const distictUserandDecisions = [];
 DuplicateDecisions.forEach(customer => {
-  if (!distinctDecisions.hasOwnProperty(customer.id)) {
-    distinctDecisions[customer.id] = {
-      decisions: [customer.analysis_type]
-    };
-  } else {
-    if (
-      !distinctDecisions[customer.id]['decisions'].includes(
-        customer.analysis_type
-      )
-    ) {
-      distinctDecisions[customer.id]['decisions'].push([
-        customer.analysis_type
-      ]);
+  let users = distictUserandDecisions.filter(user => user.id === customer.id);
+  if (users.length > 0) {
+    var usersOldInfo = users[0];
+    var prevAnalysises = usersOldInfo['analysis'];
+    var analysisListforCurrent = prevAnalysises.filter(analysis=>analysis === customer.analysis_type)
+    if(analysisListforCurrent==0){
+     prevAnalysises.push(customer.analysis_type);
+    usersOldInfo['analysis'] = prevAnalysises;
     }
+   
+  } else {
+    distictUserandDecisions.push({
+      id: customer.id,
+      name: customer.name,
+      analysis: [customer.analysis_type]
+    });
   }
 });
 
@@ -50,4 +53,4 @@ const distinctAnalysisType = DuplicateDecisions.filter(
 //   return {id,otherDecision}
 // })
 
-appDiv.innerHTML += `<li>${JSON.stringify(distinctDecisions)}</li>`;
+appDiv.innerHTML += `<li>${JSON.stringify(distictUserandDecisions)}</li>`;
